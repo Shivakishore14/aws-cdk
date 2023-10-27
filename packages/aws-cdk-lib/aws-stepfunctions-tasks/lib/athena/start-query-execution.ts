@@ -228,7 +228,11 @@ export class AthenaStartQueryExecution extends sfn.TaskStateBase {
         } : undefined,
         ResultConfiguration: {
           EncryptionConfiguration: this.renderEncryption(),
-          OutputLocation: this.props.resultConfiguration?.outputLocation ? `s3://${this.props.resultConfiguration.outputLocation.bucketName}/${this.props.resultConfiguration.outputLocation.objectKey}/` : undefined,
+          OutputLocation: this.props.resultConfiguration?.outputLocation ?
+            sfn.JsonPath.format(
+              's3://{}/{}/', this.props.resultConfiguration?.outputLocation?.bucketName,
+              this.props.resultConfiguration?.outputLocation?.objectKey
+            ): undefined,
         },
         WorkGroup: this.props.workGroup,
         ExecutionParameters: this.props.executionParameters,
